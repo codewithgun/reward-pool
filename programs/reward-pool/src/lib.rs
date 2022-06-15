@@ -637,7 +637,7 @@ pub struct InitializePool<'info> {
         seeds = [
             pool.to_account_info().key.as_ref()
         ],
-        bump = pool_nonce,
+        bump,
     )]
     pool_signer: UncheckedAccount<'info>,
 
@@ -664,9 +664,11 @@ pub struct CreateUser<'info> {
             owner.key.as_ref(),
             pool.to_account_info().key.as_ref()
         ],
-        bump = nonce,
+        bump,
+        space = 1000
     )]
     user: Box<Account<'info, User>>,
+    #[account(mut)]
     owner: Signer<'info>,
     // Misc.
     system_program: Program<'info, System>,

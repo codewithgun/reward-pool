@@ -92,7 +92,31 @@ describe('Multiuser Reward Pool', () => {
   });
 
   //to track cost to create pool, and compare to refund at teardown
-  let costInLamports; 
+  let costInLamports;
+
+  it("Deposit directly to stakingVault affect reward", async () => {
+    xMintObject.mintTo(funders[0].xTokenPubkey, envProvider.wallet.payer, [], 1);
+    await funders[2].initializePool(poolKeypair, rewardDuration3, false);
+
+    let pool = funders[2].poolPubkey;
+
+    let user = new User(0);
+    await user.init(10_000_000_000, xMintPubkey, 0, stakingMint3.publicKey, 500_000, mintB.publicKey, 0, mintB.publicKey, 0);
+    await user.createUserStakingAccount(pool);
+    await user.stakeTokens(100_000);
+    await funders[2].fund(new anchor.BN(100_000), new anchor.BN(0), pool);
+    
+    // some malicious user
+    const poolState = await program.account.pool.fetch(pool);
+    await funders[2].stakingMintObject.mintTo(poolState.stakingVault, envProvider.wallet.payer, [], 100_000_000);
+    
+    await wait(rewardDuration3.toNumber());
+    await user.unstakeTokens(100_000);
+
+    let userObject = await program.account.user.fetch(user.userPubkey);
+
+    console.log("Funded amount", "100_000", "pending reward", userObject.rewardAPerTokenPending.toNumber());
+  });
 
   it("Creates a pool", async () => {
     try {

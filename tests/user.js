@@ -71,6 +71,7 @@ class User {
         }
     }
 
+
     async initializePool(poolKeypair, rewardDuration, singleStake) {
         const [
             _poolSigner,

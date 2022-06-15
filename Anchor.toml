@@ -11,7 +11,7 @@ cluster = "localnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
-test = "mocha -t 1000000 tests/"
+test = "npx mocha -t 1000000 tests/"
 
 [programs.localnet]
 reward_pool = "Dev9TukuTHwNmYm2NUcXQ9iuNL8UrP3TnZCj1Y7UjV18"
